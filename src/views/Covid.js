@@ -1,22 +1,17 @@
 import {useState, useEffect} from "react";
-import axios from "axios";
+import useFetch from "../customize/fetch";
 import moment from "moment";
 
-const Covid = () => {
 
-    const [dataCovid, setDataCovid] = useState([]);
-    useEffect(async () => {
-        
-        let res = await axios.get(`https://api.covid19api.com/country/vietnam?from=2022-03-01T00:00:00&to=2022-04-01T00:00:00`)
-        let data = res && res.data ? res.data : [];
-        if (data && data.length > 0) {
-            data.map(item => {
-                item.Date = moment(item.Date).format('DD/MM/YYYY')
-                return item
-            })
-        }
-        setDataCovid(data)
-    }, []);
+const Covid = () => {
+    const today = new Date(new Date().setHours(0, 0, 0));
+    const priorDate = moment().subtract(30, 'days');
+
+    const {
+        data: dataCovid,
+        isLoading,
+        isError
+    } = useFetch(`https://api.covid19api.com/country/vietnam?from=${priorDate.toISOString()}&to=${today.toISOString()}`)
 
     return (
         <>
@@ -32,7 +27,8 @@ const Covid = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {dataCovid && dataCovid.length > 0 && dataCovid.map((item, index) => {
+
+                {isError === false && isLoading === false && dataCovid && dataCovid.length > 0 && dataCovid.map((item, index) => {
                     return (
                         <tr key={index}>
                             <th>{item.Date}</th>
@@ -44,6 +40,20 @@ const Covid = () => {
                     )
                 })}
                 </tbody>
+                {isLoading === true
+                    && <tr>
+                        <th colSpan={5} style={{textAlign: 'center'}}>
+                            Loading....
+                        </th>
+                    </tr>
+                }
+                {isError === false &&
+                    <tr>
+                        <th colSpan={5} style={{textAlign: 'center'}}>
+                            Something Wrong....
+                        </th>
+                    </tr>
+                }
             </table>
         </>
     )

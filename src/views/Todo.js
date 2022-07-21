@@ -1,7 +1,5 @@
 const Todo = ({...props}) => {
-
     let {list, handleDeleteItem} = props;
-
     return (
         <div>
             {list.map((item, index) => {

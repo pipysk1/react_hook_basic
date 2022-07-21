@@ -4,6 +4,7 @@ import Nav from "./views/Nav";
 import {useState} from "react";
 import Todo from "./views/Todo";
 import Covid from "./views/Covid";
+import {CountDown,NewCountDown} from "./views/CountDown";
 
 const courses = [
     {
@@ -60,6 +61,9 @@ const App = () => {
         let course = list.filter(item => item.id !== data.id)
         setList(course)
     }
+    const onTimesup=()=>{
+        alert('times up')
+    }
 
 
     return (
@@ -68,7 +72,13 @@ const App = () => {
             <header className="App-header">
                 <Nav/>
                 <img src={logo} className="App-logo" alt="logo"/>
-<Covid/>
+                <CountDown
+                    onTimesup={onTimesup}
+                />
+                <span>---------</span>
+                <NewCountDown />
+                <Covid/>
+
                 {/*<Todo*/}
                 {/*    list={list}*/}
                 {/*    handleDeleteItem={handleDeleteItem}*/}
